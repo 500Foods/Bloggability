@@ -1,0 +1,22 @@
+# Redirect HTTP to HTTPS
+RewriteEngine On 
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Remove www.  
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,L]  
+
+# Set CORS Header
+Header set Access-Control-Allow-Origin "*"
+
+# Exclude /docs/ and /swagger
+RewriteRule ^docs(/.*)?$ - [L]
+RewriteRule ^swagger(.*)?$ - [L]
+
+# Rewrite /api/ routes  
+RewriteRule ^api/(.*)$ routes.php?path=$1 [QSA,L]  
+
+# Pass through everything else
+RewriteCond %{REQUEST_URI} !^/index\.html$  
+RewriteRule ^(.*)$ /index.html [L]
