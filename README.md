@@ -47,17 +47,20 @@ While this project is currently under active development, feel free to give it a
 [![Count Lines of Code](https://github.com/500Foods/Template/actions/workflows/main.yml/badge.svg)](https://github.com/500Foods/Template/actions/workflows/main.yml)
 <!--CLOC-START -->
 ```
-Last updated at 2024-02-16 10:31:00 UTC
+Last updated at 2024-02-16 22:05:48 UTC
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
 SQL                              1             39             40            176
-Markdown                         1              9              2             56
+Markdown                         1              9              2             57
 YAML                             2              8             13             35
+HTML                             2              0              0             32
+Pascal                           2             10              2             28
+Delphi Form                      1              0              0             13
 -------------------------------------------------------------------------------
-SUM:                             4             56             55            267
+SUM:                             9             66             57            341
 -------------------------------------------------------------------------------
-3 Files (without source code) were skipped
+4 Files (without source code) were skipped
 ```
 <!--CLOC-END-->
 
