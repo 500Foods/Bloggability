@@ -1,0 +1,5 @@
+{
+  "BLOGGABLE_TITLE": "Bloggable",
+  "BLOGGABLE_DESCRIPTION": "REST API for the Bloggable service",
+  "BLOGGABLE_DATABASE":"../database/bloggable.sqlite"
+}
