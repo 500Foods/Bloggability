@@ -9,13 +9,6 @@ $constants = json_decode($constantsData, true);
  *   version="1.0.1",
  *   title="Bloggable",
  *   description="REST API for bloggable service",
- *   @OA\Parameter(
- *     name="tryItOutEnabled",
- *     in="query",
- *     description="Enable Try it out button",
- *     required=false,
- *     @OA\Schema(type="boolean", default=true)
- *   )
  * )
  **/
 
@@ -42,7 +35,7 @@ class BlogAPI {
   }
 
   // Logs all actions to the ACTIONS table
-  private function LogAction($appId, $ipAddress, $functionName, $weblogId) {
+  public function logAction($appId, $ipAddress, $functionName, $weblogId) {
     // Check if SQLite3 extension is loaded
     if (!extension_loaded('sqlite3')) {
       echo "SQLite3 extension is not loaded. Please enable it in your PHP configuration.";
@@ -53,10 +46,13 @@ class BlogAPI {
     $db = new SQLite3($GLOBALS['constants']['Bloggable Database']);
 
     // Prepare and execute SQL statement to insert a new record
-    $sql = "INSERT INTO ACTIONS (action_id, action_description, action_timestamp, action_address) VALUES (NULL, ?, CURRENT_TIMESTAMP, ?)";
+    $sql = "INSERT INTO ACTION (action_priority, action_source, weblog_id, action_ip_address, app_id) VALUES (?, ?, ?, ?, ?)";
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(1, $functionName, SQLITE3_TEXT);
-    $stmt->bindValue(2, $ipAddress, SQLITE3_TEXT);
+    $stmt->bindValue(1, 1, SQLITE3_INTEGER);
+    $stmt->bindValue(2, $functionName, SQLITE3_TEXT);
+    $stmt->bindValue(3, $weblogId, SQLITE3_TEXT);
+    $stmt->bindValue(4, $ipAddress, SQLITE3_TEXT);
+    $stmt->bindValue(5, $appId, SQLITE3_TEXT);
     $result = $stmt->execute();
 
     // Close database connection
@@ -64,7 +60,6 @@ class BlogAPI {
 
     return $result;
   }
-
 
   /**
    * @OA\Get(
@@ -78,7 +73,7 @@ class BlogAPI {
    *       description="Bloggable ID",
    *       @OA\Schema(
    *           type="string",
-   *           default="Bloggable 001"
+   *           default="bloggable"
    *       )
    *   ),
    *   @OA\Response(
@@ -90,19 +85,21 @@ class BlogAPI {
 
   public function Welcome($params) {
 
-    $weblogId = $params['bloggable_id'] ?? 'default';
-
     // Check if SQLite3 extension is loaded
     if (!extension_loaded('sqlite3')) {
         print "SQLite3 extension is not loaded. Please enable it in your PHP configuration." . PHP_EOL;
         return;
     }
 
+    // Extract the parameters we're interested in from $params
+    $appId = $params['app_id'] ?? 'console';
+    $weblogId = $params['bloggable_id'] ?? 'bloggable';
+
     // Set the IP address based on the environment
-    $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'localhost: console';
+    $ipAddress = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
 
     // Log the action
-    $this->LogAction("appId", $ipAddress, "Welcome", $weblogId);
+    $this->logAction($appId, $ipAddress, "Welcome", $weblogId);
 
     // Connect to SQLite database
     $db = new SQLite3($GLOBALS['constants']['Bloggable Database']);
@@ -129,30 +126,43 @@ class BlogAPI {
 
 }
 
-
 // Main Program Start
 
 // Check if running from the command line
 if (php_sapi_name() === 'cli') {
+
   // Parse command-line arguments
   $args = $argv;
   array_shift($args); // Remove the script name
   $endpoint = array_shift($args);
 
-  if($endpoint === 'welcome') {
+  // Check if we've got a valid endpoint
+  $blogAPI = new BlogAPI();
+  if(method_exists($blogAPI,$endpoint)) {
 
+    // Prepare parameters
     $params = [];
     foreach ($args as $arg) {
       list($key, $val) = explode('=', $arg);
       $params[$key] = $val;
     }
 
-    $blogAPI = new BlogAPI();
-    $blogAPI->Welcome($params);
+    // Call endpoint
+    $blogAPI->$endpoint($params);
 
   } else {
-      print "Usage: php bloggable.php <endpoint> [parameters]" . PHP_EOL;
-      print "Available endpoints: welcome" . PHP_EOL;
+
+    // Provide command-line usage instructions
+    print "Usage: php bloggable.php <endpoint> [parameters]" . PHP_EOL;
+    print "Available endpoints:" . PHP_EOL;
+
+    // List all the endpoints, excluding internal functions
+    $class_methods = get_class_methods($blogAPI);
+    foreach ($class_methods as $method_name) {
+      if(!in_array($method_name, ['handleRequest','logAction'])) {
+        print $method_name . PHP_EOL;
+      }
+    }
   }
 }
 
