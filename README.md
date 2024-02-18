@@ -4,7 +4,7 @@ The Bloggable repository consists of two major elements.
 1. A PHP implementation of a REST API server that supports things like JWTs, Swagger, database access (SQLite by default), and all the endpoints needed to implement a multi-user multi-blog environment.
 2. A TMS WEB Core implementation of a REST API client for the above server. This is essentially used to generate the blog website including all the UI for logging in, searching, account management, and so on.
 
-# Database
+## Database
 In this project, the underlying database uses SQLite. In a production environment with many users, this would likely not be the most robust option. It was chosen here primarily as it is one of the simplest options, where it can be created and used directly without having to spend much effort installing or otherwise managing the database. The 'database' folder contains the 'createdb-sqlite.sql' script, which includes all the DDL and initial INSERT statements to get this up and running with minimal effort. Other databases may be used of course. The tables we're interested in using for this project include the following.
 - ACCOUNT
 - LOOKUP
@@ -26,6 +26,18 @@ There's nothing particularly complicated or fancy about the tables or their cont
 - Fields like 'updated_by', 'updated_at', 'created_by', created_at', etc., applied in some fashion to most of the tables.
 - Primary keys (including compound primary keys) have been defined where it makes sense to define them.
 - LOOKUP table used to store typical Key:Value sets used in many places, rather than separate tables for each
+
+## Routing
+The .htaccess file helps this along, directing traffic mainly for /api (going to routes.php), /docs (going to swagger), and then everything else to index.html (the TMS WEB Core client app), being careful to pass along any query parameters at the same time. The routes.php script is primarily concerned with calling the REST API (found in bloggable.php) along with whatever parameters came along with the URL.
+
+## PHP REST API
+The REST API is implemented via bloggable.php with a little help from routes.php. Routes.php is just used to call the endpoints defined in bloggable.php whenever a URL is encountered that starts with /api/. This ensures that the REST API endpoints get sent to the bloggable.php script. 
+
+## Swagger
+To test this REST API, Swagger has been setup for this project. Unfortunately, due to issues with the zircote/swagger-php library that I could not resolve, the swagger.json file is generated externally rather than from directly within the bloggable.php script. This means that it doesn't have the same kind of access to things like the JSON configuration used by the script. To get around this, and to make it easier to update the Swagger docs, a separate swagger.php script is provided. This runs the vendor/bin/openapi command with the necessary parameters to generate the swagger.json file that we're after, and then reads in the configuration JSON file that the bloggable.php script uses (bloggable.json) and updates swagger.json as needed. To display the Swagger content, a basic index.html page is provided, normally accessed from the /docs URL, that then refers to the generated swagger.json. This also has a minor tweak from the version on the Swagger UI website to disable the TryItNow buttons. 
+
+# TMS WEB Core
+The client app is implemented in TMS WEB Core, a Delphi tool that takes care of transpiling Delphi (Pascal) projects into 100% HTML/CSS/JS code. In this project, we're using the REST API to retrieve everything needed to present a typical blog-style website. The blogs themselves are of course stored in a database that the REST API provides access to. The TMS WEB Core app provides the structure of the page and the rest of the client UI experience for editing and managing blogs, accounts, authors, security and the rest of it.
 
 ## Key Dependencies
 For the server side, this includes a PHP project that implements a REST API. Documentation is implemented with Swagger, so some dependencies come as a result of that.
