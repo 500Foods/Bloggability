@@ -1,0 +1,9 @@
+openapi: 3.0.0
+info:
+    title: Bloggable
+    description: 'REST API for Bloggable'
+    version: 1.0.1
+paths:
+    /api/welcome: { get: { tags: [Blog], summary: 'Get blog welcome data', operationId: 2e88e4c8c02b6e404267a0fa44c66b42, parameters: [{ name: bloggable_id, in: query, description: 'Bloggable ID', required: false, schema: { type: string, default: 'Bloggable 001' } }], responses: { 200: { description: 'Successful response' } } } }
+components:
+    securitySchemes: { jwtAuth: { type: http, bearerFormat: JWT, scheme: bearer } }
