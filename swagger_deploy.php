@@ -13,8 +13,8 @@ $json = json_decode(file_get_contents('bloggable.json'), true);
 $yaml = Symfony\Component\Yaml\Yaml::parseFile('docs/swagger.yaml');
 
 // Update info
-$yaml['info']['title'] = $json['BLOGGABLE_TITLE'];
-$yaml['info']['description'] = $json['BLOGGABLE_DESCRIPTION'];
+$yaml['info']['title'] = $json['Bloggable Title'];
+$yaml['info']['description'] = $json['Bloggable Description'];
 
 // Dump YAML
 file_put_contents('docs/swagger.yaml', Symfony\Component\Yaml\Yaml::dump($yaml));
