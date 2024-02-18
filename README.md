@@ -36,7 +36,7 @@ The REST API is implemented via bloggable.php with a little help from routes.php
 ## Swagger
 To test this REST API, Swagger has been setup for this project. Unfortunately, due to issues with the zircote/swagger-php library that I could not resolve, the swagger.json file is generated externally rather than from directly within the bloggable.php script. This means that it doesn't have the same kind of access to things like the JSON configuration used by the script. To get around this, and to make it easier to update the Swagger docs, a separate swagger.php script is provided. This runs the vendor/bin/openapi command with the necessary parameters to generate the swagger.json file that we're after, and then reads in the configuration JSON file that the bloggable.php script uses (bloggable.json) and updates swagger.json as needed. To display the Swagger content, a basic index.html page is provided, normally accessed from the /docs URL, that then refers to the generated swagger.json. This also has a minor tweak from the version on the Swagger UI website to disable the TryItNow buttons. 
 
-# TMS WEB Core
+## TMS WEB Core
 The client app is implemented in TMS WEB Core, a Delphi tool that takes care of transpiling Delphi (Pascal) projects into 100% HTML/CSS/JS code. In this project, we're using the REST API to retrieve everything needed to present a typical blog-style website. The blogs themselves are of course stored in a database that the REST API provides access to. The TMS WEB Core app provides the structure of the page and the rest of the client UI experience for editing and managing blogs, accounts, authors, security and the rest of it.
 
 ## Key Dependencies
