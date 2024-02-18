@@ -6,14 +6,42 @@ $constants = json_decode($constantsData, true);
 
 /**
  * @OA\Info(
- *      version="1.0.1",
- *      title="Bloggable",
- *      description="REST API for bloggable service",
+ *   version="1.0.1",
+ *   title="Bloggable",
+ *   description="REST API for bloggable service",
+ *   @OA\Parameter(
+ *     name="tryItOutEnabled",
+ *     in="query",
+ *     description="Enable Try it out button",
+ *     required=false,
+ *     @OA\Schema(type="boolean", default=true)
+ *   )
  * )
- */
+ **/
+
+/**
+ *
+ * @OA\SecurityScheme(
+ *   type="http",
+ *   scheme="bearer",
+ *   bearerFormat="JWT",
+ *   securityScheme="jwtAuth",
+ * )
+ **/
 
 class BlogAPI {
 
+  // Routes incoming REST API requests to the appropriate endpoint
+  public function handleRequest($uri, $method, $params) {
+    switch($uri) {
+      case 'welcome':
+        $this->Welcome($params);
+        break;
+
+    }
+  }
+
+  // Logs all actions to the ACTIONS table
   private function LogAction($appId, $ipAddress, $functionName, $weblogId) {
     // Check if SQLite3 extension is loaded
     if (!extension_loaded('sqlite3')) {
@@ -22,7 +50,7 @@ class BlogAPI {
     }
 
     // Connect to SQLite database
-    $db = new SQLite3($GLOBALS['constants']['BLOGGABLE_DATABASE']);
+    $db = new SQLite3($GLOBALS['constants']['Bloggable Database']);
 
     // Prepare and execute SQL statement to insert a new record
     $sql = "INSERT INTO ACTIONS (action_id, action_description, action_timestamp, action_address) VALUES (NULL, ?, CURRENT_TIMESTAMP, ?)";
@@ -37,31 +65,33 @@ class BlogAPI {
     return $result;
   }
 
+
   /**
    * @OA\Get(
-   *     path="/welcome",
-   *     tags={"Blog"},
-   *     summary="Get blog welcome data",
-   *     @OA\Parameter(
-   *         name="weblog_id",
-   *         in="query",
-   *         required=false,
-   *         description="Weblog ID",
-   *         @OA\Schema(
-   *             type="string",
-   *             default="web001"
-   *         )
-   *     ),
-   *     @OA\Response(
-   *         response=200,
-   *         description="Successful response",
-   *     ),
+   *   path="/api/welcome",
+   *   tags={"Blog"},
+   *   summary="Get blog welcome data",
+   *   @OA\Parameter(
+   *       name="bloggable_id",
+   *       in="query",
+   *       required=false,
+   *       description="Bloggable ID",
+   *       @OA\Schema(
+   *           type="string",
+   *           default="Bloggable 001"
+   *       )
+   *   ),
+   *   @OA\Response(
+   *     response=200,
+   *     description="Successful response",
+   *   )
    * )
-   */
+   **/
 
-  // Other functions and endpoints...
+  public function Welcome($params) {
 
-  public function Welcome($weblogId = 'web001') {
+    $weblogId = $params['bloggable_id'] ?? 'default';
+
     // Check if SQLite3 extension is loaded
     if (!extension_loaded('sqlite3')) {
         print "SQLite3 extension is not loaded. Please enable it in your PHP configuration." . PHP_EOL;
@@ -75,7 +105,7 @@ class BlogAPI {
     $this->LogAction("appId", $ipAddress, "Welcome", $weblogId);
 
     // Connect to SQLite database
-    $db = new SQLite3($GLOBALS['constants']['BLOGGABLE_DATABASE']);
+    $db = new SQLite3($GLOBALS['constants']['Bloggable Database']);
 
     // Prepare and execute SQL statement
     $sql = "SELECT * FROM WEBLOG WHERE weblog_id = ?";
@@ -89,47 +119,42 @@ class BlogAPI {
         $weblogData[] = $row;
     }
 
-    // Check if multiple rows were returned
-    if (count($weblogData) > 1) {
-        http_response_code(500);
-        print "Error: Multiple rows returned for weblog_id: $weblogId" . PHP_EOL;
-        return;
-    }
-
     // Close database connection
     $db->close();
 
     // Return the data as JSON
     header('Content-Type: application/json');
-    print json_encode($weblogData) . PHP_EOL;
-}
+    print json_encode($weblogData);
+  }
 
 }
+
+
+// Main Program Start
 
 // Check if running from the command line
 if (php_sapi_name() === 'cli') {
-    // Parse command-line arguments
-    $args = $argv;
-    array_shift($args); // Remove the script name
-    $endpoint = array_shift($args);
+  // Parse command-line arguments
+  $args = $argv;
+  array_shift($args); // Remove the script name
+  $endpoint = array_shift($args);
 
-    if ($endpoint === 'welcome') {
-        $weblogId = null;
-        foreach ($args as $arg) {
-            if (strpos($arg, 'weblog_id=') === 0) {
-                $weblogId = substr($arg, strlen('weblog_id='));
-                break;
-            }
-        }
+  if($endpoint === 'welcome') {
 
-        $blogAPI = new BlogAPI();
-        $blogAPI->Welcome($weblogId);
-    } else {
-        print "Usage: php bloggable.php <endpoint> [parameters]" . PHP_EOL;
-        print "Available endpoints: welcome" . PHP_EOL;
+    $params = [];
+    foreach ($args as $arg) {
+      list($key, $val) = explode('=', $arg);
+      $params[$key] = $val;
     }
-} else {
-    // Handle web requests through routes.php
+
+    $blogAPI = new BlogAPI();
+    $blogAPI->Welcome($params);
+
+  } else {
+      print "Usage: php bloggable.php <endpoint> [parameters]" . PHP_EOL;
+      print "Available endpoints: welcome" . PHP_EOL;
+  }
 }
 
 ?>
+
