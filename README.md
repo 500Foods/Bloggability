@@ -49,12 +49,12 @@ For the client side, As with any modern web application, other JavaScript librar
 - [Tabulator](https://www.tabulator.info) - Fantastic pure JavaScript web data tables
 - [Font Awesome](https://www.fontawesome.com) - The very best icons
 - [Luxon](https://moment.github.io/luxon/#/) - For handling date/time conversions
-- [FlatPickr](https://flatpickr.js.org) - Main UI date pickers
-- [PanZoom](https://github.com/timmywil/panzoom) - Used when viewing photos/posters/backgrounds
+- [FlatPickr](https://flatpickr.js.org) - Date picker component
+- [PanZoom](https://github.com/timmywil/panzoom) - Used when viewing images for panning and zooming
 - [InteractJS](https://interactjs.io/) - Dragging and resizing UI elements of all kinds
-- [Simplebar](https://github.com/Grsmto/simplebar) - Used to create the custom hexagonal scrollbars
-- [D3](https://d3js.org/) - Used here to draw audio waveforms
-- [FileSaver](https://moment.github.io/luxon/#/?id=luxon) - For downloading HexaGong projects
+- [Simplebar](https://github.com/Grsmto/simplebar) - Used for custom scrollbars
+- [D3](https://d3js.org/) - Used for drawing charts
+- [FileSaver](https://moment.github.io/luxon/#/?id=luxon) - For downloading files
 
 ## Additional Notes
 While this project is currently under active development, feel free to give it a try and post any issues you encounter.  Or start a discussion if you would like to help steer the project in a particular direction.  Early days yet, so a good time to have your voice heard.  As the project unfolds, additional resources will be made available, including platform binaries, more documentation, demos, and so on.
