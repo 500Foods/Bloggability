@@ -15,12 +15,12 @@ RewriteRule ^docs(/.*)?$ - [L]
 RewriteRule ^swagger(.*)?$ - [L]
 RewriteRule ^routes\.php$ - [L]
 RewriteRule ^bloggable\.php$ - [L]
-RewriteRule ^bloggable\.json$ - [L]
-RewriteRule ^token\.php$ - [L]
 
 # Block access to /database and /vendor
 RewriteRule ^database(/.*)?$ - [F,L]
 RewriteRule ^vendor(/.*)?$ - [F,L]
+RewriteRule ^bloggable\.json$ - [F,L]
+RewriteRule ^token\.php$ - [F,L]
 
 # Rewrite /api for routes.php -> bloggable.php
 RewriteRule ^api/(.*)$ routes.php?path=$1 [QSA,L]
