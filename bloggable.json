@@ -1,5 +1,7 @@
 {
   "Bloggable Title": "Bloggable",
   "Bloggable Description": "REST API for Bloggable",
-  "Bloggable Database":"../database/bloggable.sqlite"
+  "Bloggable Database Engine":"SQLite",
+  "Bloggable Database":"./database/bloggable.sqlite",
+  "Bloggable JWT Secret":"NowIsTheTimeForAllGoodFolkToComeToTheAidOfTheirCountry"
 }
