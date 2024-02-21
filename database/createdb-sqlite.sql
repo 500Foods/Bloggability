@@ -447,3 +447,25 @@ VALUES
 SELECT 'HISTORY table created and sample data inserted (' || changes() || ' rows)';
 
 
+
+-- Table: TOKEN
+CREATE TABLE TOKEN (
+  token TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  issued_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  issued_by TEXT NOT NULL,
+  issued_for TEXT NOT NULL,
+  PRIMARY KEY (token),
+  FOREIGN KEY (issued_for) REFERENCES ACCOUNT(account_id)
+);
+
+-- Insert sample TOKEN data
+INSERT INTO TOKEN (token, expires_at, issued_at, issued_by, issued_for)
+VALUES
+  ('Sample JWT', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin', 'admin');
+
+-- Print number of rows inserted
+SELECT 'TOKEN table created and sample data inserted (' || changes() || ' rows)';
+
+
+
