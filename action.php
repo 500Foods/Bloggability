@@ -21,17 +21,19 @@ if (!extension_loaded('sqlite3')) {
 $db = new SQLite3($constants['Bloggable Database']);
 
 // Log the action
-$sql = "INSERT INTO ACTION (action_priority, action_source, app_id, action_ip_address, action_description) VALUES (?, ?, ?, ?, ?)";
+$sql = "INSERT INTO ACTION (action_priority, action_source, action_app_id, action_ip_address, action_description, action_execution_time) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $db->prepare($sql);
 $stmt->bindValue(1, 1, SQLITE3_INTEGER);
 $stmt->bindValue(2, 'admin', SQLITE3_TEXT);
 $stmt->bindValue(3, 'action.php', SQLITE3_TEXT);
 $stmt->bindValue(4, 'localhost: console', SQLITE3_TEXT);
 $stmt->bindValue(5, 'View Actions', SQLITE3_TEXT);
+$stmt->bindValue(6, 0, SQLITE3_INTEGER);
 $result = $stmt->execute();
 
 // Prepare and execute SQL statement to select from ACTION table
-$sql = "SELECT action_timestamp, action_priority, action_source, account_id, author_id, weblog_id, blog_id, app_id, action_ip_address, action_description FROM ACTION ORDER BY action_timestamp DESC LIMIT 50";
+$sql = "SELECT action_timestamp, action_priority, action_source, action_account_id, action_author_id, action_weblog_id, action_blog_id, action_app_id, action_ip_address, action_description, action_execution_time
+          FROM ACTION ORDER BY action_timestamp DESC LIMIT 50";
 $result = $db->query($sql);
 
 // Check if there are any rows
@@ -40,22 +42,22 @@ if ($result === false) {
     echo "Error executing SQL query: " . $db->lastErrorMsg() . PHP_EOL;
 } else {
     // Get column names
-    $columns = ['action_timestamp', 'action_priority', 'action_source', 'account_id', 'author_id', 'weblog_id', 'blog_id', 'app_id', 'action_ip_address', 'action_description'];
+    $columns = ['action_timestamp', 'action_priority', 'action_source', 'action_account_id', 'action_author_id', 'action_weblog_id', 'action_blog_id', 'action_app_id', 'action_ip_address', 'action_execution_time', 'action_description'];
 
     // Print header
     foreach ($columns as $column) {
-        echo str_pad($column, 20);
+        echo str_pad(str_replace('action_','', $column), 21);
     }
     echo PHP_EOL;
 
     // Print divider
-    echo str_repeat('-', 20 * count($columns)) . PHP_EOL;
+    echo str_repeat('-', 21 * count($columns)) . PHP_EOL;
 
     // Fetch and print the data
     $rowCount = 0;
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         foreach ($columns as $column) {
-            echo str_pad($row[$column], 20);
+            echo str_pad($row[$column], 21);
         }
         echo PHP_EOL;
         $rowCount++;
