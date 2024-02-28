@@ -10,28 +10,34 @@ RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,L]
 # Set CORS Header
 Header set Access-Control-Allow-Origin "*"
 
-# Exclude docs/swagger/routes/bloggable
+# Exclude folders docs/swagger/routes - these need to be passed without changes
 RewriteRule ^docs(/.*)?$ - [L]
 RewriteRule ^swagger(.*)?$ - [L]
 RewriteRule ^routes\.php$ - [L]
-RewriteRule ^bloggable\.php$ - [L]
+
+# These are scripts that are accessible from the web, and also need to be passed without changes
+RewriteRule ^bloggablity\.php$ - [L]
 RewriteRule ^phpinfo\.php$ - [L]
-RewriteRule ^bloggable\.json$ - [F,L]
-RewriteRule ^token\.php$ - [F,L]
 
 # Block access to sensitive folders: database, /vendor, /keys as well as bloggable.json
 RewriteRule ^database(/.*)?$ - [F,L]
 RewriteRule ^vendor(/.*)?$ - [F,L]
 RewriteRule ^keys(/.*)?$ - [F,L]
-RewriteRule ^bloggable\.json$ - [F,L]
+
+# Block access to sensitive JSON files
+RewriteRule ^bloggability\.json$ - [F,L]
+RewriteRule ^bloggability-DB2\.json$ - [F,L]
+RewriteRule ^bloggability-MySQL\.json$ - [F,L]
+RewriteRule ^bloggability-SQLite\.json$ - [F,L]
 
 # Block access to internal scripts
-# NOTE: These scripts are also set to not return anything unless run from cmd-line
+# NOTE: These scripts are set to not return anything unless run from cmd-line anyway
 RewriteRule ^action\.php$ - [F,L]
 RewriteRule ^addkey\.php$ - [F,L]
 RewriteRule ^notifykey\.php$ - [F,L]
 RewriteRule ^setpasswd\.php$ - [F,L]
 RewriteRule ^swagger\.php$ - [F,L]
+RewriteRule ^switchdb\.sh$ - [F,L]
 RewriteRule ^token\.php$ - [F,L]
 
 # Rewrite /api for routes.php -> bloggable.php
@@ -40,7 +46,7 @@ RewriteRule ^api/(.*)$ routes.php?path=$1 [QSA,L]
 # Pass through front-end app requests
 RewriteCond %{REQUEST_URI} !^/index\.html$
 RewriteCond %{REQUEST_URI} !^/routes\.php$
-RewriteCond %{REQUEST_URI} !^/bloggable\.php$
+RewriteCond %{REQUEST_URI} !^/bloggability\.php$
 RewriteCond %{REQUEST_URI} !^/phpinfo\.php$
 RewriteCond %{REQUEST_URI} !^/swagger\.json$
 RewriteRule ^(.*)$ /index.html [L]
