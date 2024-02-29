@@ -1,16 +1,20 @@
 # Bloggable
 
 The Bloggable repository consists of two major elements.
-1. A PHP implementation of a REST API server that supports things like JWTs, Swagger, database access (SQLite by default), and all the endpoints needed to implement a multi-user multi-blog environment.
+1. A PHP implementation of a REST API server that supports things like JWTs, Swagger, database access (examples using SQLite, MySQL, and IBM DB2 are included), and all the endpoints needed to implement a multi-user and multi-blog environment.
 2. A TMS WEB Core implementation of a REST API client for the above server. This is essentially used to generate the blog website including all the UI for logging in, searching, account management, and so on.
 
+## IMPORTANT
+Before we get any further, please note that this repository isn't necessarily configured in the most secure way. Typically, the contents of this repository would be dropped into the root of your website, like where index.html might normally be found. This would mean that all of the underlying JSON, the "keys" and "database" folders, and numerous PHP scripts would be there as well. This is not great. Better to move all of those elsewhere, even just up one level - out of sight of the prying eyes of your web server. The .htaccess file includes rules to block such access if you don't do this, but this assumes that the .htaccess will be properly used by your web server. Which isn't always the case.
+
 ## Database
-In this project, the underlying database uses SQLite. In a production environment with many users, this would likely not be the most robust option. It was chosen here primarily as it is one of the simplest options, where it can be created and used directly without having to spend much effort installing or otherwise managing the database. The 'database' folder contains the 'createdb-sqlite.sql' script, which includes all the DDL and initial INSERT statements to get this up and running with minimal effort. Other databases may be used of course. The tables we're interested in using for this project include the following.
+The 'database' folder contains everything needed to create the database in SQLite, MySQL, or IBM DB2 using one of the 'createdb-X' SQL scripts. Additionally, Bash scripts have been added which will run these scripts and produce something similar in terms of output. Here are the tables we're interested in. Note that table names have been defined as all uppercase, and field names have been defined as all lowercase. Just because. Note also that the IBM DB2 connection in PHP sets an option to always return lowercase for field names.
+
 - ACCOUNT
 - LOOKUP
 - AUTHOR
 - AUTHOR_ACCOUNT
-- WEBBLOG
+- WEBLOG
 - WEBLOG_ACCOUNT
 - BLOG
 - COMMENT
