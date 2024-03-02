@@ -1,7 +1,7 @@
 <?php
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = explode('/api/', $uri)[1];
+$api_uri = explode('/api/', $uri)[1];
 $method = $_SERVER['REQUEST_METHOD'];
 
 if(!in_array($method, ['GET','POST'])) {
@@ -9,8 +9,16 @@ if(!in_array($method, ['GET','POST'])) {
   exit;
 }
 
-require 'bloggable.php';
+require 'bloggability.php';
 $blogAPI = new BlogAPI();
-$blogAPI->handleRequest($uri, $method, $_GET, $_POST);
+
+if (strpos($uri, '/rss-') === 0) {
+  $weblog = explode('.', $uri)[0];
+  $weblog = explode('-', $weblog)[1];
+  $blogAPI->handleRequest('RSS', $method, ['weblog' => $weblog]);
+
+} else {
+  $blogAPI->handleRequest($api_uri, $method, $_GET, $_POST);
+}
 
 ?>

@@ -1,4 +1,4 @@
-program Bloggable;
+program Bloggability;
 
 uses
   Vcl.Forms,

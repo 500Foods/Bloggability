@@ -1,3 +1,11 @@
+-- (Re)Initialize a SQLite Bloggability Database
+-- This creates all the tables, keys, foreign keys, and sample data
+--
+-- WARNING: This will drop and recreate all tables, so do not run 
+-- against any database that has data that you don't want to lose.
+
+SELECT 'INITIALIZING DATABASE';
+
 -- Drop existing tables
 DROP TABLE IF EXISTS ACCOUNT;
 DROP TABLE IF EXISTS LOOKUP;
@@ -11,7 +19,8 @@ DROP TABLE IF EXISTS ACTION;
 DROP TABLE IF EXISTS OPTION;
 DROP TABLE IF EXISTS NOTIFY;
 DROP TABLE IF EXISTS HISTORY;
-
+DROP TABLE IF EXISTS TOKEN;
+DROP TABLE IF EXISTS APIKEY;
 
 
 -- Table: ACCOUNT 
@@ -234,11 +243,18 @@ CREATE TABLE WEBLOG (
   weblog_name TEXT NOT NULL,
   weblog_description TEXT,
   weblog_url TEXT NOT NULL,
+  weblog_thumbnail_url TEXT,
+  weblog_image_url TEXT,
+  weblog_image_alt TEXT,
+  weblog_favicon_url TEXT,
   weblog_style TEXT NOT NULL,
+  weblog_language TEXT NOT NULL DEFAULT 'en', 
+  weblog_copyright TEXT, 
   weblog_created_by TEXT NOT NULL,
   weblog_created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   weblog_updated_by TEXT NOT NULL,
   weblog_updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  weblog_latest_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(weblog_id),
   FOREIGN KEY (weblog_created_by) REFERENCES ACCOUNT(account_id),
   FOREIGN KEY (weblog_updated_by) REFERENCES ACCOUNT(account_id)
@@ -247,7 +263,7 @@ CREATE TABLE WEBLOG (
 -- Insert sample WEBLOG data
 INSERT INTO WEBLOG (weblog_id, weblog_status, weblog_name, weblog_description, weblog_url, weblog_style, weblog_created_by, weblog_updated_by)
 VALUES
-  ('bloggable', 1, 'Bloggable', 'Bloggable tool for blogging about blogs', 'bloggable', '[]', 'admin', 'admin');
+  ('bloggability', 1, 'Bloggability', 'Bloggablity tool for blogging about blogs', 'bloggability', '[]', 'admin', 'admin');
   
 -- Print number of rows inserted  
 SELECT 'WEBLOG table created and sample data inserted (' || changes() || ' rows)';
@@ -273,7 +289,7 @@ CREATE TABLE WEBLOG_ACCOUNT (
 -- Insert sample WEBLOG_ACCOUNT data 
 INSERT INTO WEBLOG_ACCOUNT (weblog_id, account_id, weblog_account_role, weblog_account_created_by, weblog_account_updated_by)
 VALUES
-  ('bloggable', 'admin', 4, 'admin', 'admin');
+  ('bloggability', 'admin', 4, 'admin', 'admin');
 
 -- Print number of rows inserted
 SELECT 'WEBLOG_ACCOUNT table created and sample data inserted (' || changes() || ' rows)';
@@ -290,7 +306,9 @@ CREATE TABLE BLOG (
   blog_categories TEXT,
   blog_title TEXT NOT NULL,
   blog_url TEXT NOT NULL,  
-  blog_photo TEXT,
+  blog_thumbnail_url, TEXT,
+  blog_image_URL TEXT,
+  blog_image_alt TEXT,
   blog_summary TEXT,
   blog_content TEXT NOT NULL,
   blog_created_by TEXT NOT NULL,
@@ -307,10 +325,10 @@ CREATE TABLE BLOG (
   FOREIGN KEY (blog_publish_by) REFERENCES ACCOUNT(account_id)
 );
 
--- Insert sample BLOGS data
+-- Insert sample BLOG data
 INSERT INTO BLOG (blog_id, blog_weblog_id, blog_author_id, blog_status, blog_tags, blog_categories, blog_title, blog_url, blog_summary, blog_content, blog_created_by, blog_updated_by, blog_publish_by)
 VALUES
-  ('first', 'bloggable', 'auth001', 4, ';1;2;', ';1;2;', 'My First Blog', 'my_first_blog', 'First blog summary', 'First blog content', 'admin', 'admin', 'admin');
+  ('first', 'bloggability', 'auth001', 3, ';1;2;', ';1;2;', 'My First Blog', 'my_first_blog', 'First blog summary', 'First blog content', 'admin', 'admin', 'admin');
 
 -- Print number of rows inserted  
 SELECT 'BLOG table created and sample data inserted (' || changes() || ' rows)';
@@ -351,19 +369,20 @@ CREATE TABLE ACTION (
   action_timestamp TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   action_priority INTEGER NOT NULL,
   action_source TEXT,
-  account_id TEXT,
-  author_id TEXT,
-  weblog_id TEXT,
-  blog_id TEXT,
-  app_id TEXT,
+  action_account_id TEXT,
+  action_author_id TEXT,
+  action_weblog_id TEXT,
+  action_blog_id TEXT,
+  action_app_id TEXT,
+  action_execution_time INTEGER NOT NULL,
   action_ip_address TEXT NOT NULL,
   action_description 
 );
 
 -- Insert sample ACTION data
-INSERT INTO ACTION (action_priority, action_source, account_id, action_ip_address, action_description)
+INSERT INTO ACTION (action_priority, action_source, action_account_id, action_ip_address, action_description, action_execution_time)
 VALUES
-  (1, 'System', 'admin', 'localhost: console', 'Database initialization');
+  (1, 'System', 'admin', 'localhost: console', 'Database initialization', 0);
 
 -- Print number of rows inserted
 SELECT 'ACTION table created and sample data inserted (' || changes() || ' rows)';
@@ -460,12 +479,34 @@ CREATE TABLE TOKEN (
 );
 
 -- Insert sample TOKEN data
-INSERT INTO TOKEN (token, expires_at, issued_at, issued_by, issued_for)
+INSERT INTO TOKEN (token, expires_at, issued_at, issued_by, issued_for)       
 VALUES
-  ('Sample JWT', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'admin', 'admin');
-
+  ('Sample JWT', DATETIME(CURRENT_TIMESTAMP, '+1 hour'), CURRENT_TIMESTAMP, 'admin', 'admin');
+  
 -- Print number of rows inserted
 SELECT 'TOKEN table created and sample data inserted (' || changes() || ' rows)';
 
 
 
+-- Table: APIKEY
+CREATE TABLE APIKEY (
+  apikey TEXT NOT NULL,
+  app_id TEXT NOT NULL,
+  issued_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  issued_by TEXT NOT NULL,
+  expires_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  expires_by TEXT NOT NULL,
+  PRIMARY KEY (apikey),
+  FOREIGN KEY (issued_by) REFERENCES ACCOUNT(account_id)
+);
+
+-- Insert sample APIKEY data
+INSERT INTO APIKEY(apikey, app_id, issued_by, expires_by, expires_at)
+VALUES
+  ('Test-APIKEY','bloggability', 'admin', 'admin',  DATETIME(CURRENT_TIMESTAMP, '+1 year'));
+  
+-- Print number of rows inserted
+SELECT 'APIKEY table created and sample data inserted (' || changes() || ' rows)';
+
+
+SELECT 'DATABASE INITIALIZED';
