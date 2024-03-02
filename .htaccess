@@ -36,7 +36,7 @@ RewriteRule ^switchdb\.sh$ - [F,L]
 RewriteRule ^token\.php$ - [F,L]
 
 # Rewrite /rss for routes.php -> bloggability.php
-RewriteRule ^rss-([a-zA-Z0-9]+)\.xml$ routes.php?path=rss&weblogid=$1 [QSA,L]
+RewriteRule ^rss-([a-zA-Z0-9]+)\.xml$ routes.php?path=rss&weblog=$1 [QSA,L]
 
 # Rewrite /api for routes.php -> bloggablity.php
 RewriteRule ^api/(.*)$ routes.php?path=$1 [QSA,L]
