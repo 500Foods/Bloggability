@@ -9,8 +9,15 @@ if(!in_array($method, ['GET','POST'])) {
   exit;
 }
 
-require 'bloggable.php';
+require 'bloggability.php';
 $blogAPI = new BlogAPI();
-$blogAPI->handleRequest($uri, $method, $_GET, $_POST);
+
+if (strpos($uri, 'rss-') === 0) {
+  $weblogid = explode('.', $uri)[0];
+  $weblogid = explode('-', $weblogid)[1];
+  $blogAPI->handleRequest('rss', $method, ['weblogid' => $weblogid]);
+} else {
+  $blogAPI->handleRequest($uri, $method, $_GET, $_POST);
+}
 
 ?>
