@@ -1,7 +1,22 @@
 {
-  "Bloggable Title": "Bloggable",
-  "Bloggable Description": "REST API for Bloggable",
-  "Bloggable Database Engine":"SQLite",
-  "Bloggable Database":"./database/bloggable.sqlite",
-  "Bloggable JWT Secret":"NowIsTheTimeForAllGoodFolkToComeToTheAidOfTheirCountry"
+  "Bloggability Title": "Bloggablity",
+  "Bloggability Description": "REST API for Bloggability (SQLite)",
+  "Bloggability URL":"https://www.bloggability.com/",
+
+  "Bloggability Database Engine":"SQLite",
+  "Bloggability Database":"./database/bloggability.sqlite",
+
+  "Bloggability Keystore":"./keys/keystore.jsone",
+  "Bloggability Keystore Log":"./keys/keystore.log",
+  "Bloggability Keystore Key":"MakeThisAReallyLongSecret-LongerThanThisPerhaps",
+
+  "Bloggability Administrator E-Mail":"administrator@example.com",
+  "Bloggability Administrator Name":"Some Administrator",
+
+  "Bloggability SMTP Host":"mail.example.com",
+  "Bloggability SMTP Port":587,
+  "Bloggability SMTP User":"smtp.username",
+  "Bloggability SMTP Pass":"smtp.password",
+  "Bloggability SMTP From":"concierge@example.com",
+  "Bloggability SMTP Name":"Bloggablity PHP Server"
 }
