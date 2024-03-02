@@ -1,13 +1,8 @@
-# Redirect HTTP to HTTPS
 RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Remove www Prefix
-RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [R=301,L]
+# NOTE: force https and force www are handled in Apache config
 
-# Set CORS Header
+# Set CORS header
 Header set Access-Control-Allow-Origin "*"
 
 # Exclude folders docs/swagger/routes - these need to be passed without changes
@@ -16,7 +11,7 @@ RewriteRule ^swagger(.*)?$ - [L]
 RewriteRule ^routes\.php$ - [L]
 
 # These are scripts that are accessible from the web, and also need to be passed without changes
-RewriteRule ^bloggablity\.php$ - [L]
+RewriteRule ^bloggability\.php$ - [L]
 RewriteRule ^phpinfo\.php$ - [L]
 
 # Block access to sensitive folders: database, /vendor, /keys as well as bloggable.json
@@ -40,7 +35,10 @@ RewriteRule ^swagger\.php$ - [F,L]
 RewriteRule ^switchdb\.sh$ - [F,L]
 RewriteRule ^token\.php$ - [F,L]
 
-# Rewrite /api for routes.php -> bloggable.php
+# Rewrite /rss for routes.php -> bloggability.php
+RewriteRule ^rss-([a-zA-Z0-9]+)\.xml$ routes.php?path=rss&weblogid=$1 [QSA,L]
+
+# Rewrite /api for routes.php -> bloggablity.php
 RewriteRule ^api/(.*)$ routes.php?path=$1 [QSA,L]
 
 # Pass through front-end app requests
@@ -48,5 +46,6 @@ RewriteCond %{REQUEST_URI} !^/index\.html$
 RewriteCond %{REQUEST_URI} !^/routes\.php$
 RewriteCond %{REQUEST_URI} !^/bloggability\.php$
 RewriteCond %{REQUEST_URI} !^/phpinfo\.php$
+RewriteCond %{REQUEST_URI} !^/connect\.php$
 RewriteCond %{REQUEST_URI} !^/swagger\.json$
 RewriteRule ^(.*)$ /index.html [L]
