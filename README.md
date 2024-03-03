@@ -48,6 +48,7 @@ The client app is implemented in TMS WEB Core, a Delphi tool that takes care of 
 ## Key Dependencies - Server
 For the server side, this includes a PHP project that implements a REST API. Documentation is implemented with Swagger, so some dependencies come as a result of that. For the most part, every effort has been made to reduce the need for additional dependencies.
 - [zircote/swagger-php](https://github.com/zircote/swagger-php) - Swagger PHP library
+  
 While some of these are no longer used, it might be helpful to know what is in the composer library in case something was overlooked in any of the related materials for this project. Symfony in particular is used by the Swagger PHP library mentioned above, but as this isn't used in the same way now, most of the symfony dependencies are no longer required. But if the issues there were resolved, these were all that were needed to have the library generate Swagger JSON file from within the PHP script itself.
 ```
 $ composer show
