@@ -4,7 +4,7 @@
 require 'vendor/autoload.php';
 
 // Generate base swagger.yaml
-exec('vendor/bin/openapi -l -o docs/swagger.json ~/public_html --exclude vendor'); 
+exec('vendor/bin/openapi -l -o docs/swagger.json ~/public_html --exclude vendor');
 
 // Load Config JSON
 $constants = json_decode(file_get_contents('bloggability.json'), true);
@@ -20,4 +20,3 @@ $swagger['info']['description'] = $constants['Bloggability Description'];
 file_put_contents('docs/swagger.json',json_encode($swagger, JSON_PRETTY_PRINT));
 
 print "Swagger: swagger.yaml generated and updated!".PHP_EOL;
-
