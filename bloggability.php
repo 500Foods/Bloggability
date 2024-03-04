@@ -1,16 +1,26 @@
+#!/usr/bin/env php
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', TRUE);
-ini_set('display_startup_errors', TRUE);
+if (ob_get_level()) {
+    $buf = ob_get_clean();
+    ob_start();
+    echo substr($buf, 0, strpos($buf, file(__FILE__)[0]));
+}
 
 // bloggability.php
 //
 // This is the REST API implementation for the back-end of the Bloggability project
 //
-// Endpoints:
-// - Login
-// - Welcome
-// - RSS
+// BlogAPI:
+// - handleRequest()
+// - Authorization Services:
+//   - Login
+//   - Renew
+//   - Logout
+//   - LogoutAll
+//   - LogAction
+// - Blog Services
+//   - Welcome
+//   - RSS
 
 
 // Most actions are logged using a timer to monitor performance
