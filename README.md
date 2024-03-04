@@ -4,7 +4,7 @@ The Bloggability repository consists of two major elements.
 1. A PHP implementation of a REST API server that supports things like JWTs, Swagger, database access (examples using SQLite, MySQL, and IBM DB2 are included), and all the endpoints needed to implement a multi-user and multi-blog environment.
 2. A TMS WEB Core implementation of a REST API client for the above server. This is essentially used to generate the blog website including all the UI for logging in, searching, account management, and so on.
 
-A detailed blog post about this project was first published on the TMS Software Blog, which can be found at https://www.tmssoftware.com/site/blog.asp?post=1189.
+A detailed blog post about this project was first published on the [TMS Software Blog](https://www.tmssoftware.com/site/blog.asp?post=1189).
 
 ## IMPORTANT
 Before we get any further, please note that this repository isn't necessarily configured in the most secure way. Typically, the contents of this repository would be dropped into the root of a website, like where index.html might normally be found. This would mean that all of the underlying JSON, the "keys" and "database" folders, and numerous PHP scripts would be there as well. This is not great. Better to move all of those elsewhere, even just up one level - out of sight of the prying eyes of the web server. The .htaccess file includes rules to block such access if these files remain in this location, but this assumes that the contents of .htaccess will be properly applied. Which isn't always the case, particularly if the web server is not Apache, which is what is assumed here. And even with Apache, it is possible that the .htaccess file will be ignored and any secrets found in the JSON files could be exposed.
