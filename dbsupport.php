@@ -1,11 +1,13 @@
 <?php
 
 // dbsupport.php
-// 
+//
 // This contains a number of functions used to help make writing Bloggability code
 // a little less cumbersome, particualrly when it comes to using multiple databases
 // or when using boilerplate code for new REST API endpoints.
-// 
+//
+// function logAction() - logs an entry in the ACTION table
+// function returnError() - ends the program when a fatal error occurs
 // function getSecrets() - used to find the keystore, decrypt it and make the keys avaialble
 // function getConnection() - returns everything we need to work with the current database
 // function executeQuery() - runs a query against the database, returning data and status information
@@ -18,6 +20,52 @@
 //
 // Generally speaking these should all return either false, meaning that there's nothing available,
 // or some other value that the caller can use to decide whether it is fatal enough to justify exit().
+
+
+
+function logAction($dbEngine, $db, $appId, $ipAddress, $functionName, $weblogId, $message, $startTime)
+{
+    $runningTime = round(microtime(true) - $startTime, 3) * 1000;
+
+    // Log the action
+    $sql = <<<QUERY
+        INSERT INTO ACTION
+            (action_priority, action_source, action_account_id, action_app_id, action_ip_address, action_description, action_execution_time)
+        VALUES
+            (?, ?, ?, ?, ?, ?, ?)
+        QUERY;
+    $params = [
+        'dtypes' => 'issssss',
+        'param1' => 1,
+        'param2' => $functionName,
+        'param3' => $weblogId,
+        'param4' => $appId,
+        'param5' => $ipAddress,
+        'param6' => $message,
+        'param7' => $runningTime
+    ];
+    [$results, $affected, $errors] = queryExecute($dbEngine, $db, $sql, $params);
+
+    // Process the results
+    if (!$results) {
+        print "Error executing statement: ".$errors.PHP_EOL;
+        exit(4);
+    }
+}
+
+
+
+// Returns an error if something was encountered while executing an endpoint
+function returnError($dbEngine, $db, $endpoint, $error, $ipAddress, $appId, $accountId, $weblogId, $startTime) {
+
+    // Log the error
+    logAction($dbEngine, $db, $appId, $ipAddress, $endpoint, $weblogId, '[Error] '.$endpoint.': '.$error, $startTime);
+
+    // Return error response
+    header('Content-Type: application/json');
+    print json_encode(['Status' => "[Error] $endpoint: $error"]) . PHP_EOL;
+    exit;
+}
 
 
 
