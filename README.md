@@ -138,21 +138,21 @@ While this project is currently under active development, feel free to give it a
 [![Count Lines of Code](https://github.com/500Foods/Template/actions/workflows/main.yml/badge.svg)](https://github.com/500Foods/Template/actions/workflows/main.yml)
 <!--CLOC-START -->
 ```
-Last updated at 2024-03-04 08:57:12 UTC
+Last updated at 2024-03-06 07:50:01 UTC
 -------------------------------------------------------------------------------
 Language                     files          blank        comment           code
 -------------------------------------------------------------------------------
 PHP                              9            430            359           1364
 SQL                              3            222            148           1111
 Markdown                         1             17              2            146
+Bourne Shell                     8             34             19             88
 HTML                             3              0              0             63
 JSON                             2              4              0             63
-Bourne Shell                     7             14              8             44
 YAML                             2              8             13             35
 Pascal                           2             10              2             28
 Delphi Form                      1              0              0             13
 -------------------------------------------------------------------------------
-SUM:                            30            705            532           2867
+SUM:                            31            725            543           2911
 -------------------------------------------------------------------------------
 6 Files (without source code) were skipped
 ```
